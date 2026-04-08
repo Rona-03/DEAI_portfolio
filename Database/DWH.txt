@@ -1,0 +1,121 @@
+DWH
+
+
+CREATE TABLE Dim_Klant (
+    klant_sk INTEGER PRIMARY KEY AUTOINCREMENT,
+    klantnr INTEGER,
+    naam TEXT,
+    woonplaats TEXT,
+    geslacht TEXT,
+    geboortedatum TEXT,
+    leeftijdsgroep TEXT,
+
+    geldig_vanaf TEXT,
+    geldig_tot TEXT,
+    is_actueel INTEGER
+);
+
+CREATE TABLE Dim_Accessoire (
+    accessoire_sk INTEGER PRIMARY KEY AUTOINCREMENT,
+    accessoirenr INTEGER,
+    naam TEXT,
+    soort TEXT,
+    standaardprijs REAL,
+    inkoopprijs REAL,
+    leverancier_naam TEXT,
+    leverancier_woonplaats TEXT
+);
+
+CREATE TABLE Dim_Monteur (
+    monteur_sk INTEGER PRIMARY KEY AUTOINCREMENT,
+    monteurnr INTEGER,
+    naam TEXT,
+    uurloon REAL,
+    filiaal_naam TEXT,
+    filiaal_provincie TEXT
+);
+
+
+CREATE TABLE Dim_Datum (
+    datum_sk INTEGER PRIMARY KEY AUTOINCREMENT,
+    datum TEXT,
+    dag INTEGER,
+    maand INTEGER,
+    jaar INTEGER,
+    kwartaal INTEGER
+);
+
+CREATE TABLE Dim_Fiets (
+    fiets_sk INTEGER PRIMARY KEY AUTOINCREMENT,
+    fietsnr INTEGER,
+    soort TEXT,
+    merk TEXT,
+    type TEXT,
+    kleur TEXT,
+    standaardprijs REAL,
+    inkoopprijs REAL,
+    prijsklasse TEXT,
+    fabrikant_naam TEXT,
+    fabrikant_plaats TEXT,
+
+    geldig_vanaf TEXT,
+    geldig_tot TEXT,
+    is_actueel INTEGER
+);
+
+
+CREATE TABLE Fact_Fiets_Verkoop (
+    verkoop_sk INTEGER PRIMARY KEY AUTOINCREMENT,
+    fiets_verkoop INTEGER,
+
+    datum_sk INTEGER,
+    klant_sk INTEGER,
+    fiets_sk INTEGER,
+    monteur_sk INTEGER,
+
+    aantal INTEGER,
+    verkoopprijs REAL,
+    totale_prijs REAL,
+
+    FOREIGN KEY (datum_sk) REFERENCES Dim_Datum(datum_sk),
+    FOREIGN KEY (klant_sk) REFERENCES Dim_Klant(klant_sk),
+    FOREIGN KEY (fiets_sk) REFERENCES Dim_Fiets(fiets_sk),
+    FOREIGN KEY (monteur_sk) REFERENCES Dim_Monteur(monteur_sk)
+);
+
+CREATE TABLE Fact_Onderhoud (
+    onderhoud_sk INTEGER PRIMARY KEY AUTOINCREMENT,
+    onderhoud INTEGER,
+
+    datum_sk INTEGER,
+    fiets_sk INTEGER,
+    monteur_sk INTEGER,
+
+    duur_minuten INTEGER,
+    arbeidskosten REAL,
+
+    FOREIGN KEY (datum_sk) REFERENCES Dim_Datum(datum_sk),
+    FOREIGN KEY (fiets_sk) REFERENCES Dim_Fiets(fiets_sk),
+    FOREIGN KEY (monteur_sk) REFERENCES Dim_Monteur(monteur_sk)
+);
+
+CREATE TABLE Fact_Accessoire_Verkoop (
+    accessoire_verkoop_sk INTEGER PRIMARY KEY AUTOINCREMENT,
+    accessoire_verkoop INTEGER,
+
+    datum_sk INTEGER,
+    klant_sk INTEGER,
+    accessoire_sk INTEGER,
+    monteur_sk INTEGER,
+
+    aantal INTEGER,
+    verkoopprijs REAL,
+    totale_prijs REAL,
+
+    FOREIGN KEY (datum_sk) REFERENCES Dim_Datum(datum_sk),
+    FOREIGN KEY (klant_sk) REFERENCES Dim_Klant(klant_sk),
+    FOREIGN KEY (accessoire_sk) REFERENCES Dim_Accessoire(accessoire_sk),
+    FOREIGN KEY (monteur_sk) REFERENCES Dim_Monteur(monteur_sk)
+);
+
+
